@@ -4,14 +4,17 @@ from django.db import models
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=100, unique=True)  # Название категории
-
-    class Meta:
-        verbose_name_plural = "Categories"
-
+    name = models.CharField(max_length=100)  # Название категории
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        db_table = 'first_app_category'  # Имя таблицы в базе данных
+        verbose_name = 'Категория'  # Человекочитаемое имя модели
+        verbose_name_plural = 'Категории'
+        unique_together = [('name',)]
+
 
 # Модель Task
 
@@ -32,6 +35,10 @@ class Task(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)  # Дата и время создания
 
     class Meta:
+        db_table = 'first_app_task'  # Имя таблицы в базе данных
+        verbose_name = 'Задача'  # Человекочитаемое имя модели
+        verbose_name_plural = 'Задачи'
+        ordering = ['-created_at']  # Сортировка по убыванию даты создания
         unique_together = ('title', 'created_at')  # Уникальное сочетание названия задачи и даты
 
     def __str__(self):
@@ -57,3 +64,11 @@ class SubTask(models.Model):
 
     def __str__(self):
         return self.title
+
+
+    class Meta:
+        db_table = 'first_app_subtask'  # Имя таблицы в базе данных
+        verbose_name = 'Подзадача'  # Человекочитаемое имя модели
+        verbose_name_plural = 'Подзадачи'
+        ordering = ['-created_at']  # Сортировка по убыванию даты создания
+        unique_together = ('title', 'task')
