@@ -20,11 +20,11 @@ class Category(models.Model):
 
 class Task(models.Model):
     STATUS_CHOICES = [
-        ('new', 'New'),
-        ('in_progress', 'In progress'),
-        ('pending', 'Pending'),
-        ('blocked', 'Blocked'),
-        ('done', 'Done'),
+        ('New', 'New'),
+        ('In_progress', 'In progress'),
+        ('Pending', 'Pending'),
+        ('Blocked', 'Blocked'),
+        ('Done', 'Done'),
     ]
 
     title = models.CharField(max_length=200)  # Название задачи
@@ -46,6 +46,7 @@ class Task(models.Model):
 
 # Модель SubTask
 
+
 class SubTask(models.Model):
     STATUS_CHOICES = [
         ('new', 'New'),
@@ -64,7 +65,6 @@ class SubTask(models.Model):
 
     def __str__(self):
         return self.title
-
 
     class Meta:
         db_table = 'first_app_subtask'  # Имя таблицы в базе данных
