@@ -1,11 +1,13 @@
 from django.contrib import admin
 from .models import Category, Task, SubTask
 
+
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
     search_fields = ('name',)
     ordering = ('name',)
+
 
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
@@ -14,6 +16,7 @@ class TaskAdmin(admin.ModelAdmin):
     search_fields = ('title', 'description')
     filter_horizontal = ('categories',)
     ordering = ('-created_at',)
+
 
 @admin.register(SubTask)
 class SubTaskAdmin(admin.ModelAdmin):

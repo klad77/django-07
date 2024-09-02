@@ -26,7 +26,7 @@ class Task(models.Model):
         ('Blocked', 'Blocked'),
         ('Done', 'Done'),
     ]
-
+    objects = models.Manager
     title = models.CharField(max_length=200)  # Название задачи
     description = models.TextField()  # Описание задачи
     categories = models.ManyToManyField(Category, related_name='tasks')  # Категории задачи

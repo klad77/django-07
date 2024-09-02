@@ -1,16 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="cbd868d6-2462-4c9f-987a-7c129ce91556" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/first_app/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/first_app/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/first_app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/first_app/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/first_app/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/first_app/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/first_app/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/first_app/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
@@ -25,7 +44,8 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/PC/PycharmProjects/django-07"
+    "last_opened_file_path": "C:/Users/PC/PycharmProjects/agile_projects",
+    "settings.editor.selected.configurable": "promo.django"
   }
 }]]></component>
   <component name="SharedIndexes">
