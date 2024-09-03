@@ -1,6 +1,8 @@
 from rest_framework.decorators import api_view
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework import filters
+from rest_framework import viewsets
+from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
@@ -73,3 +75,21 @@ class SubTaskListCreateView(ListCreateAPIView):
 class SubTaskDetailUpdateDeleteView(RetrieveUpdateDestroyAPIView):
     queryset = SubTask.objects.all()
     serializer_class = SubTaskSerializer
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategoryCreateSerializer
+
+    @action(detail=False, methods=['GET'])
+    def statistic(self, request):
+        category_with_task_count = Category.objects.annotate(task_count=Count('tasks'))
+        data = [
+            {
+                'id': category.id,
+                'category': category.name,
+                'task_count': category.task_count
+            }
+            for category in category_with_task_count
+        ]
+        return Response(data)
