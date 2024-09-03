@@ -1,7 +1,8 @@
 from rest_framework.decorators import api_view
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
-from rest_framework import generics
-from django.utils import timezone
 from rest_framework.pagination import PageNumberPagination
 from django.db.models import Count
 # from .models import *
@@ -15,37 +16,23 @@ class TaskPagination(PageNumberPagination):
     max_page_size = 100
 
 
-@api_view(['GET'])
-def task_list(request):
-    tasks = Task.objects.all()
+class TaskListCreateView(ListCreateAPIView):
+    queryset = Task.objects.all()
+    pagination_class = TaskPagination
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['status', 'deadline']
+    search_fields = ['title', 'description']
+    ordering_fields = ['created_at']
 
-    # Фильтрация по статусу
-    status_filter = request.query_params.get('status')
-    if status_filter:
-        tasks = tasks.filter(status=status_filter)
-
-    # Фильтрация по дедлайну
-    deadline_filter = request.query_params.get('deadline')
-    if deadline_filter:
-        tasks = tasks.filter(deadline__lte=deadline_filter)
-
-    # Пагинация
-    paginator = TaskPagination()
-    paginated_tasks = paginator.paginate_queryset(tasks, request)
-    serializer = TaskListSerializer(paginated_tasks, many=True)
-
-    return paginator.get_paginated_response(serializer.data)
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return TaskCreateSerializer
+        return TaskListSerializer
 
 
-@api_view(['POST'])
-def task_create(request):
-    serializer = TaskSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    else:
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class TaskRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
 
 
 @api_view(['GET'])
@@ -66,11 +53,23 @@ def task_statistics(request):
     return Response(data, status=status.HTTP_200_OK)
 
 
-class SubTaskListCreateView(generics.ListCreateAPIView):
+class SubTaskListCreateView(ListCreateAPIView):
     queryset = SubTask.objects.all()
     serializer_class = SubTaskSerializer
+    pagination_class = TaskPagination
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['status', 'deadline']
+    search_fields = ['title', 'description']
+    ordering_fields = ['created_at']
+
+    def perform_create(self, serializer):
+        task_id = self.request.data.get('task_id')
+        if not task_id:
+            raise serializers.ValidationError({"task_id": "This field is required."})
+        task = Task.objects.get(id=task_id)
+        serializer.save(task=task)
 
 
-class SubTaskDetailUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
+class SubTaskDetailUpdateDeleteView(RetrieveUpdateDestroyAPIView):
     queryset = SubTask.objects.all()
     serializer_class = SubTaskSerializer
