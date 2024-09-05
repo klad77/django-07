@@ -1,5 +1,5 @@
 from rest_framework.decorators import api_view
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 from rest_framework import filters
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -16,6 +16,7 @@ from django.db.models import Count
 # from .models import *
 from .serializers import *
 from rest_framework import status
+from .permission import *
 
 
 class LoginView(APIView):
@@ -85,18 +86,21 @@ class TaskListCreateView(ListCreateAPIView):
     filterset_fields = ['status', 'deadline']
     search_fields = ['title', 'description']
     ordering_fields = ['created_at']
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
             return TaskCreateSerializer
         return TaskListSerializer
 
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
 
 class TaskRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminOrOwner]
 
 
 @api_view(['GET'])
@@ -125,14 +129,19 @@ class SubTaskListCreateView(ListCreateAPIView):
     filterset_fields = ['status', 'deadline']
     search_fields = ['title', 'description']
     ordering_fields = ['created_at']
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         task_id = self.request.data.get('task_id')
         if not task_id:
             raise serializers.ValidationError({"task_id": "This field is required."})
-        task = Task.objects.get(id=task_id)
-        serializer.save(task=task)
+
+        try:
+            task = Task.objects.get(id=task_id)
+        except Task.DoesNotExist:
+            raise serializers.ValidationError({"task_id": "Task with this ID does not exist."})
+
+        serializer.save(task=task, owner=self.request.user)
 
 
 class SubTaskDetailUpdateDeleteView(RetrieveUpdateDestroyAPIView):
@@ -157,3 +166,22 @@ class CategoryViewSet(viewsets.ModelViewSet):
             for category in category_with_task_count
         ]
         return Response(data)
+
+
+class UserTaskListView(ListAPIView):
+    serializer_class = TaskListSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Task.objects.filter(owner=self.request.user)
+
+
+class UserSubTaskListView(ListAPIView):
+    serializer_class = SubTaskCreateSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return SubTask.objects.filter(owner=self.request.user)
+
+
+

@@ -7,14 +7,16 @@ from django.utils import timezone
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = ['title', 'description', 'status', 'deadline']
+        fields = '__all__'
+        read_only_fields = ['owner']
 
 
 class TaskListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ['title', 'status', 'deadline']
+        fields = '__all__'
+        read_only_fields = ['owner']
 
 
 class SubTaskCreateSerializer(serializers.ModelSerializer):
@@ -23,7 +25,7 @@ class SubTaskCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SubTask
-        fields = ['id', 'title', 'description', 'status', 'deadline', 'task_id']
+        fields = '__all__'
 
 
 class CategoryCreateSerializer(serializers.ModelSerializer):
@@ -46,9 +48,11 @@ class CategoryCreateSerializer(serializers.ModelSerializer):
 
 
 class SubTaskSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = SubTask
-        fields = ['title', 'description', 'status', 'deadline', 'task_id']
+        fields = ['title', 'description', 'status', 'deadline', 'task_id', 'owner']
+        read_only_fields = ['owner']
 
 
 class TaskDetailSerializer(serializers.ModelSerializer):

@@ -1,6 +1,5 @@
+from rest_framework.authtoken.admin import User
 from django.db import models
-
-# Модель Category
 
 
 class Category(models.Model):
@@ -15,8 +14,6 @@ class Category(models.Model):
         verbose_name_plural = 'Категории'
         unique_together = [('name',)]
 
-
-# Модель Task
 
 class Task(models.Model):
     STATUS_CHOICES = [
@@ -33,6 +30,7 @@ class Task(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new')  # Статус задачи
     deadline = models.DateTimeField()  # Дата и время дедлайна
     created_at = models.DateTimeField(auto_now_add=True)  # Дата и время создания
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tasks', null=True, blank=True)
 
     class Meta:
         db_table = 'first_app_task'  # Имя таблицы в базе данных
@@ -43,8 +41,6 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
-
-# Модель SubTask
 
 
 class SubTask(models.Model):
@@ -62,6 +58,7 @@ class SubTask(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new')  # Статус подзадачи
     deadline = models.DateTimeField()  # Дата и время дедлайна
     created_at = models.DateTimeField(auto_now_add=True)  # Дата и время создания
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subtasks', null=True, blank=True)
 
     def __str__(self):
         return self.title
